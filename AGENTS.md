@@ -1,4 +1,4 @@
-# Agent Instructions: py-project-template
+# Agent Instructions: actor-critic-pet
 
 ## Overview
 
@@ -9,7 +9,7 @@ Development runs inside Docker — commands are executed via `make` targets.
 
 | Task                                             | Command                                                     |
 |--------------------------------------------------|-------------------------------------------------------------|
-| Create dev python environment                    | `make env [python=3.12]`                                    |
+| Create dev python environment                    | `make env [python=3.14]`                                    |
 | Start dev environment                            | `make serve`                                                |
 | Stop  dev environment                            | `make down`                                                 |
 | Run checks (tests + lint + types)                | `make check`                                                |
@@ -31,7 +31,7 @@ Development runs inside Docker — commands are executed via `make` targets.
 
 ## Conventions
 
-- **Python 3.12+**, type annotations required; mypy runs with `check_untyped_defs=true`
+- **Python 3.14+**, type annotations required; mypy runs with `check_untyped_defs=true`
 - **Line length:** 88 (ruff, flake8, blue formatter)
 - **Quotes:** single (ruff + flake8-quotes enforce this)
 - **Imports:** sorted via isort with `black` profile; `flake8-isort` enforces order

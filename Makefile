@@ -11,6 +11,10 @@ help:
 serve:
 	@sh ./docker-compose/up-dev.sh
 
+# target: up - Start all services in detached mode.
+up:
+	@docker compose -f ./docker-compose/docker-stack.yml up -d
+
 # target: down - stop and down docker stack
 down:
 	@docker compose -f ./docker-compose/docker-stack.yml down
@@ -21,8 +25,8 @@ down-rm:
 
 # target: check - run tests, mypy and flake8
 check:
-	@echo "py-project-template-dev:"
-	@docker compose -f ./docker-compose/docker-stack.yml exec py-project-template-dev sh -c "cd .. && sh scripts/check.sh"
+	@echo "actor-critic-pet-dev:"
+	@docker compose -f ./docker-compose/docker-stack.yml exec actor-critic-pet-dev sh -c "cd .. && sh scripts/check.sh"
 
 # target: config - show docker stack info
 config:
@@ -51,17 +55,3 @@ endif
 # Usage: make env [python=3.12]
 env:
 	@sh scripts/env.sh "$(python)"
-
-# target: rename - replace 'py-project-template' with --to value in key project files
-# Usage: make rename to=my-new-name
-rename:
-ifndef to
-	$(error Argument <to> is required. Usage: make rename to=my-new-name)
-endif
-	@sed -i 's/py-project-template/$(to)/g' \
-		AGENTS.md \
-		Makefile \
-		pyproject.toml \
-		README.md \
-		docker-compose/docker-compose.dev.yml
-	@sed -i '/^# target: rename/,$$d' Makefile

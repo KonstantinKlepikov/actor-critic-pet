@@ -2,26 +2,45 @@ FROM python:3.14-slim
 
 STOPSIGNAL SIGTERM
 
-# Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
-
-# Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-RUN apt-get update && apt-get install -y git curl && \
-    curl -sSL https://install.python-poetry.org | python3 -
+WORKDIR /app
+
+# Install system dependencies and Ollama
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    netcat-traditional \
+    ca-certificates \
+    zstd \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Ollama binary
+RUN curl -fsSL https://ollama.ai/install.sh | sh
+
+# Verify Ollama installation
+RUN ollama --version
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
 ENV PATH="/root/.local/bin:$PATH"
 
-COPY pyproject.toml poetry.lock /
-RUN POETRY_VIRTUALENVS_CREATE=false poetry install --with dev --no-root
+# Copy Poetry configuration
+COPY pyproject.toml poetry.lock ./
 
-COPY scripts /scripts/
+# Install Python dependencies
+RUN POETRY_VIRTUALENVS_CREATE=false poetry install --no-root --no-interaction
 
-VOLUME /src/logs
+# Copy source code
+COPY tests ./tests
+COPY src ./src
+COPY scripts/start.sh ./
 
-ARG VERSION
-ENV VERSION $VERSION
+ENV PYTHONPATH=/app/src
 
-ENTRYPOINT sh ./scripts/start.sh
+EXPOSE 8550
+
+ENTRYPOINT sh start.sh
 # ENTRYPOINT ["tail", "-f", "/dev/null"]

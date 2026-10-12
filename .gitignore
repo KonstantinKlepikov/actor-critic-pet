@@ -175,5 +175,6 @@ logs/
 
 # Project folders
 .vscode/*
-!.vscode/.gitkeep
 docker-stack.yml
+.github
+ollama_models/
